@@ -81,7 +81,7 @@ export default {
         },
       };
       marked.use({ renderer });
-      const bio = userProfile.bio === null ? '' : userProfile.bio;
+      const bio = (userProfile.bio == null || userProfile == undefined) ? '' : userProfile.bio;
       return res.render('page/main/userProfile', {
         layout: 'main',
         pageTitle: `Profile ${userProfile.displayName}`,
@@ -98,7 +98,7 @@ export default {
         fortification: Fortifications[userProfile.fortLevel].name,
         gold: new Intl.NumberFormat('en-GB').format(userProfile.gold),
         recruitLink: await userProfile.userRecruitingLink(),
-        bio: marked.parse(bio),
+        bio: marked(bio),
         cantAttack: cantAttack,
         messages: messages,
         isOnline:

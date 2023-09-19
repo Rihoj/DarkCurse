@@ -1,8 +1,8 @@
-import BankHistoryModel from './models/bankHistory';
-import UserModel from './models/user';
-import UserSessionModel from './models/userSession';
-import AttackLogModel from './models/attackLog';
-import RecruitHistoryModel from './models/recruitHistory';
+import BankHistoryModel from 'models/bankHistory';
+import UserModel from 'models/user';
+import UserSessionModel from 'models/userSession';
+import AttackLogModel from 'models/attackLog';
+import RecruitHistoryModel from 'models/recruitHistory';
 
 class ModelFactory {
   public bankHistory: typeof BankHistoryModel;

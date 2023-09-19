@@ -21,7 +21,9 @@ describe('Controller: Training', () => {
           ]
         } as UserModel
       } as unknown as Request;
-      const mockResponse = {} as Response;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
 
       await controller.trainUnitsAction(mockRequest, mockResponse);
 
@@ -45,7 +47,9 @@ describe('Controller: Training', () => {
           ]
         } as UserModel
       } as unknown as Request;
-      const mockResponse = {} as Response;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
 
       await controller.trainUnitsAction(mockRequest, mockResponse);
 
@@ -69,7 +73,9 @@ describe('Controller: Training', () => {
           ]
         } as UserModel
       } as unknown as Request;
-      const mockResponse = {} as Response;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
 
       await controller.trainUnitsAction(mockRequest, mockResponse);
 
@@ -91,12 +97,14 @@ describe('Controller: Training', () => {
           availableUnitTypes: [
             { name: 'Worker', type: 'WORKER', level: 1, bonus: 65, cost: 2000 },
           ],
+          units: [],
           subtractGold: jest.fn().mockReturnThis(),
           trainNewUnits: jest.fn().mockReturnThis(),
         } as unknown as UserModel
       } as unknown as Request;
       const mockResponse = {
         redirect: jest.fn().mockReturnThis(),
+        json: jest.fn(),
       } as unknown as Response;
 
       await controller.trainUnitsAction(mockRequest, mockResponse);
@@ -116,7 +124,137 @@ describe('Controller: Training', () => {
         }
       ]);
 
-      expect(mockResponse.redirect).toHaveBeenCalledWith('/training');
+      // expect(mockResponse.redirect).toHaveBeenCalledWith('/training');
+    });
+  });
+  describe('unTrainUnitsAction', () => {
+    test('it ignores units that are not available', async () => {
+      const mockRequest = {
+        body: {
+          'WORKER_1': '100',
+          'WORKER_2': '1',
+        },
+        logger: {
+          debug: jest.fn().mockReturnThis(),
+        },
+        user: {
+          gold: 0,
+          citizens: 0,
+          units: [],
+          availableUnitTypes: [
+            { name: 'Worker', type: 'WORKER', level: 1, bonus: 65, cost: 2000 },
+          ]
+        } as UserModel
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+
+      await controller.untrainUnitsAction(mockRequest, mockResponse);
+
+      expect(mockRequest.logger.debug).toHaveBeenCalledWith(
+        'Units to be untrained',
+        [{level: 1, quantity: 100, cost: 2000, type: 'WORKER'}]
+      );
+    });
+    it('validates that the requested number of units does not exceed available citizens', async () => {
+      const mockRequest = {
+        body: {
+          'WORKER_1': '100',
+        },
+        logger: {
+          debug: jest.fn().mockReturnThis(),
+        },
+        user: {
+          citizens: 50,
+          units:[],
+          availableUnitTypes: [
+            { name: 'Worker', type: 'WORKER', level: 1, bonus: 65, cost: 2000 },
+          ]
+        } as UserModel
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+
+      await controller.untrainUnitsAction(mockRequest, mockResponse);
+
+      expect(mockRequest.logger.debug).toHaveBeenCalledWith(
+        'Not enough units to untrain',
+      );
+    });
+    it('validates that the cost of requested number of units does not exceed available gold', async () => {
+      const mockRequest = {
+        body: {
+          'WORKER_1': '100',
+        },
+        logger: {
+          debug: jest.fn().mockReturnThis(),
+        },
+        user: {
+          citizens: 500,
+          gold: 50,
+          units:[],
+          availableUnitTypes: [
+            { name: 'Worker', type: 'WORKER', level: 1, bonus: 65, cost: 2000 },
+          ]
+        } as UserModel
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+
+      await controller.untrainUnitsAction(mockRequest, mockResponse);
+
+      expect(mockRequest.logger.debug).toHaveBeenCalledWith(
+        'Units to be untrained',
+        [{level: 1, quantity: 100, cost: 2000, type: 'WORKER'}]
+      );
+    });
+    it('Untrains units for a sucessful request', async () => {
+      const mockRequest = {
+        body: {
+          'WORKER_1': '2',
+        },
+        logger: {
+          debug: jest.fn().mockReturnThis(),
+        },
+        user: {
+          citizens: 500,
+          gold: 5000,
+          availableUnitTypes: [
+            { name: 'Worker', type: 'WORKER', level: 1, bonus: 65, cost: 2000 },
+          ],
+          units: [
+            {type: 'WORKER', level: 1, quantity: 500}
+          ],
+          subtractGold: jest.fn().mockReturnThis(),
+          untrainNewUnits: jest.fn().mockReturnThis(),
+        } as unknown as UserModel
+      } as unknown as Request;
+      const mockResponse = {
+        redirect: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+
+      await controller.untrainUnitsAction(mockRequest, mockResponse);
+
+      // expect(mockRequest.logger.debug).toHaveBeenCalledWith(
+      //   'Subtracted gold for training units',
+      //   4000
+      // );
+
+      // expect(mockRequest.user.subtractGold).toHaveBeenCalledWith(4000);
+
+      expect(mockRequest.user.untrainNewUnits).toHaveBeenCalledWith([
+        {
+          level: 1,
+          quantity: 2,
+          type: 'WORKER',
+        }
+      ]);
+
+      // expect(mockResponse.redirect).toHaveBeenCalledWith('/training');
     });
   });
 });

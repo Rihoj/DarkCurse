@@ -22,7 +22,7 @@ export default {
         name: unit.name,
         bonus: unit.bonus,
         owneditems:
-          req.user.items.find(
+          req.user.items?.find(
             (u) =>
               u.type === unit.type &&
               u.level === unit.level &&
@@ -34,11 +34,11 @@ export default {
       };
     };
 
-    console.log(
-      req.user.availableItemTypes
-        .filter((unit) => unit.usage === 'OFFENSE' && unit.type == 'WEAPON')
-        .map((unit) => itemMapFunction(unit, 'OFFENSE', 'WEAPON'))
-    );
+    // console.log(
+    //   req.user.availableItemTypes
+    //     .filter((unit) => unit.usage === 'OFFENSE' && unit.type == 'WEAPON')
+    //     .map((unit) => itemMapFunction(unit, 'OFFENSE', 'WEAPON'))
+    // );
 
     return res.render('page/main/armory', {
       layout: 'main',
@@ -143,7 +143,7 @@ export default {
 
   async equipItemAction(req: Request, res: Response) {
     const body = req.body;
-    const unitsToTrain: {
+    const itemsToBuy: {
       type: string;
       unitType: string;
       level: number;
@@ -163,7 +163,6 @@ export default {
         }
       })
       .filter((unit) => !!unit);
-
     const itemMapFunction = (unit, idPrefix: string, itemType: string) => {
       return {
         id: `${itemType}_${idPrefix}_${unit.level}`,
@@ -181,36 +180,35 @@ export default {
         level: req.user.fortLevel,
       };
     };
-    req.logger.debug('Items to be equipped', unitsToTrain);
-    if (unitsToTrain.length === 0) {
+    req.logger.debug('Items to be equipped', itemsToBuy);
+    if (itemsToBuy.length === 0) {
       req.logger.debug('No items to equip');
       return res.json({
         error: 'No items to equip',
       });
     }
-
-    const totalCost = unitsToTrain.reduce(
+    const totalCost = itemsToBuy.reduce(
       (total, unit) => total + unit.quantity * unit.cost,
       0
     );
     if (totalCost > req.user.gold) {
-      req.logger.debug('Not enough gold to train requested units');
+      req.logger.debug('Not enough gold to purchase equipment');
       return res.json({
-        error: 'Not enough gold to train requested units',
+        error: 'Not enough gold to purchase equipment',
       });
     }
     await req.user.subtractGold(totalCost);
-    req.logger.debug('Subtracted gold for training units', totalCost);
+    req.logger.debug('Subtracted gold for equipment', totalCost);
 
     await req.user.equipNewItems(
-      unitsToTrain.map((unit) => ({
+      itemsToBuy.map((unit) => ({
         level: unit.level,
         type: unit.type as ItemType,
         quantity: unit.quantity,
         unitType: unit.unitType as UnitType,
       }))
     );
-    req.logger.debug('Trained new units', unitsToTrain);
+    req.logger.debug('New Equipment', itemsToBuy);
 
     const unitMapFunction = (unit, idPrefix: string) => {
       return {
@@ -226,7 +224,7 @@ export default {
     };
 
     return res.json({
-      success: 'Trained new units!',
+      success: 'Equipmented new items!',
       stats: {
         gold: new Intl.NumberFormat('en-GB').format(req.user.gold),
         goldInBank: new Intl.NumberFormat('en-GB').format(req.user.goldInBank),
@@ -309,7 +307,7 @@ export default {
 
   async unequipItemAction(req: Request, res: Response) {
     const body = req.body;
-    const unitsToTrain: {
+    const itemsToUnEquip: {
       type: string;
       unitType: string;
       level: number;
@@ -330,11 +328,11 @@ export default {
       })
       .filter((unit) => !!unit);
 
-    req.logger.debug('Items to be equipped', unitsToTrain);
-    if (unitsToTrain.length === 0) {
-      req.logger.debug('No items to equip');
+    req.logger.debug('Items to be unequipped', itemsToUnEquip);
+    if (itemsToUnEquip.length === 0) {
+      req.logger.debug('No items to unequip');
       return res.json({
-        error: 'No items to equip',
+        error: 'No items to unequip',
       });
     }
 
@@ -355,30 +353,32 @@ export default {
         level: req.user.fortLevel,
       };
     };
-
-    const totalCost = unitsToTrain.reduce(
-      (total, unit) => total + unit.quantity * unit.cost,
-      0
-    );
-    if (totalCost > req.user.gold) {
-      req.logger.debug('Not enough gold to equip requested items');
-      return res.json({
-        error: 'Not enough gold to equip requested items',
-      });
-    }
-    await req.user.subtractGold(totalCost);
-    req.logger.debug('Subtracted gold for equipping items', totalCost);
-
+    /*
+     * This should be decided if unequipting should cost gold
+     */
+    /*
+     * const totalCost = itemsToUnEquip.reduce(
+     *   (total, unit) => total + unit.quantity * unit.cost,
+     *   0
+     * );
+     *  if (totalCost > req.user.gold) {
+     *    req.logger.debug('Not enough gold to equip requested items');
+     *    return res.json({
+     *      error: 'Not enough gold to equip requested items',
+     *    });
+     *  }
+     *  await req.user.subtractGold(totalCost);
+     *  req.logger.debug('Subtracted gold for equipping items', totalCost);
+    */
     await req.user.unequipNewItems(
-      unitsToTrain.map((unit) => ({
+      itemsToUnEquip.map((unit) => ({
         level: unit.level,
         type: unit.type as ItemType,
         quantity: unit.quantity,
         unitType: unit.unitType as UnitType,
       }))
     );
-    req.logger.debug('Unequiped new items', unitsToTrain);
-
+    req.logger.debug('Unequipped new items', itemsToUnEquip);
     const unitMapFunction = (unit, idPrefix: string) => {
       return {
         id: `${idPrefix}_${unit.level}`,

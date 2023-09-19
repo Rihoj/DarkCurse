@@ -42,7 +42,7 @@ describe('Controller: Auth', () => {
           errorMessage: 'Email and password are mandatory'
         });
     });
-    test('returns an error if the email is not recognised', async () => {
+    test('returns an error if the email is not recognized', async () => {
       const mockRequest = {
         modelFactory: {
           user: {
@@ -64,7 +64,7 @@ describe('Controller: Auth', () => {
         .toHaveBeenCalledWith('page/marketing/login', {
           layout: 'marketing',
           pageTitle: 'Login',
-          errorMessage: 'Email or password not recognised'
+          errorMessage: 'Email or password not recognized'
         });
     });
     test('returns an error if the password is incorrect', async () => {
@@ -92,7 +92,7 @@ describe('Controller: Auth', () => {
         .toHaveBeenCalledWith('page/marketing/login', {
           layout: 'marketing',
           pageTitle: 'Login',
-          errorMessage: 'Email or password not recognised'
+          errorMessage: 'Email or password not recognized'
         });
     });
   });

@@ -11,7 +11,6 @@ async function bankPage(req: Request, res: Response, alert?: PageAlert) {
     menu_category: 'structures',
     menu_link: 'bank',
     userDataFiltered: await req.user.formatUsersStats(req.user),
-
     gold: new Intl.NumberFormat('en-GB').format(req.user.gold),
     goldInBank: new Intl.NumberFormat('en-GB').format(req.user.goldInBank),
 

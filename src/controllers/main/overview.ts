@@ -1,7 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export default {
   async overviewPage(req: Request, res: Response) {
+    if (req.user?.id == undefined) {
+      res.sendStatus(404);
+      return;
+    }
     const user = await req.modelFactory.user.fetchById(
       req.modelFactory,
       req.daoFactory,

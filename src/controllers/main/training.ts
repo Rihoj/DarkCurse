@@ -176,6 +176,7 @@ export default {
       .filter((unit) => !!unit);
 
     req.logger.debug('Units to be untrained', unitsToTrain);
+
     if (unitsToTrain.length === 0) {
       req.logger.debug('No units to untrain');
       return res.json({
@@ -190,7 +191,7 @@ export default {
         ? false
         : true;
     });
-    console.log(issue[0]);
+    // console.log(issue[0]);
     if (issue[0]) {
       req.logger.debug('Not enough units to untrain');
       return res.json({

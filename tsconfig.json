@@ -7,10 +7,18 @@
     "strictNullChecks": false,
     "declaration": false,
     "removeComments": false,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "outDir": "dist",
     "typeRoots": ["./types", "node_modules/@types"],
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["*"],
+      "controllers/*": ["controllers/main/*"],
+      "types/*": ["../types/*"],
+      "daos/*": ["daos/*"]
+    }
   },
   "lib": ["ES2020"],
   "include": ["src/**/*", "test/**/*"],

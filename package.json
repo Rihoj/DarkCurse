@@ -7,8 +7,14 @@
     "doc": "docs"
   },
   "scripts": {
+    "clean": "rm -r dist/",
+    "build": "babel src -d dist",
+    "precleanBuild": "npm run clean",
+    "cleanBuild": "npm run build",
+    "prestart": "npm run build",
     "start": "nodemon --exec ts-node src/server.ts",
-    "test": "jest",
+    "pretest": "npm run cleanBuild",
+    "test": "jest --watch",
     "migrate": "db-migrate up"
   },
   "repository": {
@@ -24,8 +30,9 @@
   },
   "homepage": "https://github.com/Moppler/DarkCurse#readme",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.4",
+    "@babel/cli": "^7.22.15",
+    "@babel/core": "^7.22.17",
+    "@babel/preset-env": "^7.22.15",
     "@babel/preset-typescript": "^7.16.0",
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.13",
@@ -37,6 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "babel-jest": "^27.3.1",
+    "babel-plugin-module-resolver": "^5.0.0",
     "chalk": "^4.1.2",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
@@ -57,9 +65,9 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.1",
     "express-handlebars": "^6.0.1",
-    "express-jwt": "^6.1.0",
-    "jsonwebtoken": "^8.5.1",
-    "knex": "^0.95.14",
+    "express-jwt": "^8.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^2.5.1",
     "marked": "^4.1.1",
     "node-cron": "^3.0.0",
     "pg": "^8.7.1",

@@ -36,6 +36,7 @@ describe('Middleware', () => {
         },
         logger: {
           debug: jest.fn(),
+          err: jest.fn(),
         } as unknown as pino.Logger,
       } as unknown as Request;
       const mockResponse = {} as Response;
@@ -117,9 +118,12 @@ describe('Middleware', () => {
         },
         logger: {
           debug: jest.fn(),
+          error: jest.fn(),
         } as unknown as pino.Logger,
       } as unknown as Request;
-      const mockResponse = {} as Response;
+      const mockResponse = {
+        clearCookie: jest.fn().mockReturnThis(),
+      } as unknown as Response;
       const mockNext = jest.fn();
 
       await middleware.authenticate(mockRequest, mockResponse, mockNext);

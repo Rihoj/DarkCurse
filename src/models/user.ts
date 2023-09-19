@@ -256,6 +256,7 @@ class UserModel {
       .filter((units) => units.type === 'OFFENSE')
       .map((unit) => unit.quantity)
       .reduce((acc, quant) => acc + quant, 0);
+    console.log(offense)
     const defense = units
       .filter((units) => units.type === 'DEFENSE')
       .map((unit) => unit.quantity)
@@ -301,9 +302,9 @@ class UserModel {
   get fortHealth(): FortHealth {
     return {
       current: this.fortHitpoints,
-      max: Fortifications[this.fortLevel].hitpoints,
+      max: Fortifications[this.fortLevel-1].hitpoints,
       percentage: Math.floor(
-        (this.fortHitpoints / Fortifications[this.fortLevel].hitpoints) * 100
+        (this.fortHitpoints / Fortifications[this.fortLevel-1].hitpoints) * 100
       ),
     };
   }

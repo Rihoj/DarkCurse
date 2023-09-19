@@ -15,7 +15,7 @@ describe('Controller: Overview', () => {
         daoFactory: {},
       } as unknown as express.Request;
       const mockRes = {
-        sendStatus: jest.fn().mockReturnThis(),
+        sendStatus: jest.fn().mockReturnValue({}),
       } as unknown as express.Response;
 
       await Controller.overviewPage(mockReq, mockRes);
@@ -42,18 +42,26 @@ describe('Controller: Overview', () => {
         goldPerTurn: 9,
         goldInBank: 10,
         attackTurns: 13,
-      } as UserModel;
+        userRecruitingLink: jest.fn().mockReturnValue("link"),
+        formatUsersStats: jest.fn(),
+      } as unknown as UserModel;
 
       const mockReq = {
+        user: {
+          id: 1
+        },
         modelFactory: {
           user: {
-            fetchById: jest.fn().mockReturnValue(mockUserModel)
+            id: jest.fn().mockReturnValue(1),
+            fetchById: jest.fn().mockReturnValue(mockUserModel),
+            userRecruitingLink: jest.fn(),
           }
         },
         daoFactory: {}
       } as unknown as express.Request;
       const mockRes = {
-        render: jest.fn().mockReturnThis()
+        render: jest.fn().mockReturnThis(),
+        sendStatus: jest.fn().mockReturnValue({}),
       } as unknown as express.Response;
 
       await Controller.overviewPage(mockReq, mockRes);
@@ -61,30 +69,11 @@ describe('Controller: Overview', () => {
       expect(mockRes.render).toHaveBeenCalledWith('page/main/overview', {
         layout: 'main',
         pageTitle: "Overview",
-
-        armySize: "2",
-        citizens: "11",
-        class: "FIGHTER",
-        attackTurns: "13",
-        displayName: "Test Name",
-        fortHealth: {
-          current: "5",
-          max: "6",
-          percentage: 7,
-        },
-        gold: "8",
-        goldInBank: "10",
-        goldPerTurn: "9",
-        experience: "12",
-        level: "3",
-        population: "1",
-        race: "UNDEAD",
-        xpToNextLevel: "4",
-
-        offense: 0,
-        defense: 0,
-        spyOffense: 0,
-        spyDefense: 0,
+        menu_category: "home",
+        menu_link: "overview",
+        recruitmentLink: "link",
+        sidebarData: undefined,
+        userDataFiltered: undefined,
         attacks: {
           won: 0,
           total: 0,

@@ -10,14 +10,16 @@ that can be worked towards.
 ## Pre-Alpha (Initial Game)
 
 The main focus of this version is to allow players to be able to experience the
-code game play. The game itself will be very limited and will mostly only work
+core game play. The game itself will be very limited and will mostly only work
 with solo play.
 
 - [X] Initial game architecture
-- [ ] Player Accounts
-  - [ ] Create new accounts
+- [X] Player Accounts
+  - [X] Create new accounts
   - [X] Login to an existing account
   - [ ] Logout (including option to expire all sessions across devices)
+    - [X] Single Session Logout
+    - [ ] Expire all sessions
 - [X] Economy
   - [X] Worker units generate gold every turn
   - [X] Fortification generates gold every turn

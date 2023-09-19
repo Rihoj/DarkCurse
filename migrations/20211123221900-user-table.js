@@ -20,6 +20,7 @@ CREATE TABLE users (
   id integer GENERATED ALWAYS AS IDENTITY,
   display_name text NOT NULL,
   email text NOT NULL,
+  salt VARCHAR(72) NOT NULL,
   password_hash text NOT NULL,
   race text NOT NULL,
   class text NOT NULL,

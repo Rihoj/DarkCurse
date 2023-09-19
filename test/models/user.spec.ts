@@ -102,7 +102,7 @@ describe('Model: User', () => {
           mockData
         );
 
-        expect(user.goldPerTurn).toBe(1130);
+        expect(user.goldPerTurn).toBe(2130);
       });
       test('it works correctly if there are no WORKER units', () => {
         const mockModelFactory = {} as ModelFactory;
@@ -120,7 +120,7 @@ describe('Model: User', () => {
           mockData
         );
 
-        expect(user.goldPerTurn).toBe(1000);
+        expect(user.goldPerTurn).toBe(2000);
       });
     });
     describe('get level', () => {
@@ -146,7 +146,7 @@ describe('Model: User', () => {
         const mockDaoFactory = {} as DaoFactory;
         const mockLogger = {} as pino.Logger;
         const mockData = {
-          experience: 201,
+          experience: 6001,
         } as UserData;
 
         const user = new UserModel(
@@ -192,7 +192,7 @@ describe('Model: User', () => {
           mockData
         );
 
-        expect(user.xpToNextLevel).toBe(50);
+        expect(user.xpToNextLevel).toBe(5850);
       });
     });
     describe('get fortHealth', () => {
@@ -224,7 +224,9 @@ describe('Model: User', () => {
         const mockModelFactory = {} as ModelFactory;
         const mockDaoFactory = {} as DaoFactory;
         const mockLogger = {} as pino.Logger;
-        const mockData = {} as UserData;
+        const mockData = {
+          fortLevel: 0
+        } as UserData;
 
         const user = new UserModel(
           mockModelFactory,

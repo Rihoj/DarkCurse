@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { AttackLogStats, AttackLogData } from '../../daos/attackLog';
-import UserModel from '../../models/user';
+import { AttackLogStats, AttackLogData } from 'daos/attackLog';
+import UserModel from 'models/user';
 
 function canAttack(AttackLevel: number, DefenseLevel: number) {
   if (DefenseLevel > AttackLevel + 5) return false;
@@ -24,7 +24,6 @@ export default {
       req.logger,
       parseInt(req.params.id)
     );
-
     if (!canAttack(attacker.level, defender.level) || attacker.offense == 0) {
       const err =
         defender.level <= attacker.level - 5
